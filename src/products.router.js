@@ -8,9 +8,9 @@ const productsJSON = fs.readFileSync('./products.json')
 
 const generateId = () => {
     const products = JSON.parse(productsJSON)
-    const id = Math.random() * 100
-    while (products.filter(p => p.id === id)) {
-        id = Math.random() * 100
+    let id = Math.floor(Math.random() * 100)
+    while (products.some(p => p.id === id)) {
+        id = Math.floor(Math.random() * 100)
     }
     return id
 }

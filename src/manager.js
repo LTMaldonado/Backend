@@ -1,4 +1,4 @@
-const fs = require('fs')
+/**const fs = require('fs')
 
 
 
@@ -100,4 +100,16 @@ class ProductManager {
 const main = async () => {
     const p1 = new ProductManager
 }
-main()
+
+const carts = [{id:1}, {id:2}, {id:3}, {id:4}, {id:5}, {id:6}, {id:7}]
+const generateId = () => {
+    let id = Math.floor(Math.random() * 10)
+    while (carts.some(p => p.id === id)) {
+        console.log(id)
+        id = Math.floor(Math.random() * 10)
+    }
+    console.log(id)
+    return id
+}
+
+generateId()*/

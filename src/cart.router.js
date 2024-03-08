@@ -8,12 +8,13 @@ const products = JSON.parse(fs.readFileSync('./products.json'))
 
 
 const generateId = () => {
-    const id = Math.random() * 100
-    while (carts.filter(p => p.id === id)) {
-        id = Math.random() * 100
+    let id = Math.floor(Math.random() * 100)
+    while (carts.some(p => p.id === id)) {
+        id = Math.floor(Math.random() * 100)
     }
     return id
 }
+
 
 router.post('/', (req, res) => {
     const cart = {
