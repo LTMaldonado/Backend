@@ -1,9 +1,10 @@
 const { Router } = require('express')
-
+const fs = require ('fs')
 const router = Router()
 
-const carts = []
-
+const cartsJSON = fs.readFileSync('./cart.json')
+const carts = JSON.parse(cartsJSON)
+const products = JSON.parse(fs.readFileSync('./products.json'))
 
 
 const generateId = () => {
@@ -40,4 +41,12 @@ router.post('/cid/products/id', (req, res) => {
     const productId = req.params.id
 
     const cartIndex = carts.findIndex(c => c.id === cartId)
+    const addedProduct = products.find(p => p.id === productId)
+
+    if(cartIndex < 0 || addedProduct < 0) {
+        res.json({status: 'error', error: 'Operacion invalida'})
+        return
+    }
+
+    
 })
