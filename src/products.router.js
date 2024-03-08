@@ -32,6 +32,12 @@ router.get('/:id', (req, res) => {
 
     const productIndex = products.findIndex(p => p.id === productId)
 
+    if(productIndex < 0 ) {
+        res.json({status: 'error', error: 'Producto no encontrado'})
+        return
+     }
+
+
     res.json(products[productIndex])
 })
 

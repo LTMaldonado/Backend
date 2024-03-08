@@ -5,8 +5,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
 
-//ES UN GET QUE DEJA FIJADOS EN LA RUTA '/' LOS ARCHIVOS DEL PUBLIC (CARPETA ESTATICA)
-app.use(express.static(`${__dirname}/../public`))
+
 
 
 
