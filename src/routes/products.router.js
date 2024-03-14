@@ -1,26 +1,17 @@
 const { Router, json } = require('express')
 const fs = require('fs')
 const router = Router()
+const manager = require('../manager')
 
 const productsJSON = fs.readFileSync('./products.json')
-
-
-
-const generateId = () => {
-    const products = JSON.parse(productsJSON)
-    let id = Math.floor(Math.random() * 100)
-    while (products.some(p => p.id === id)) {
-        id = Math.floor(Math.random() * 100)
-    }
-    return id
-}
+const products = JSON.parse(productsJSON)
 
 
 
 
 router.get('/', (req, res) => {
-    const products = JSON.parse(productsJSON)
-    const limitToFilter = req.query.limit
+    
+    const limitToFilter = parseInt(req.query.limit)
     const productsLimited = products.slice(0, limitToFilter)
 
     res.json(productsLimited)
@@ -30,8 +21,7 @@ router.get('/', (req, res) => {
 
 
 router.get('/:id', (req, res) => {
-    const products = JSON.parse(productsJSON)
-    const productId = req.params.id
+    const productId = parseInt(req.params.id)
 
     const productIndex = products.findIndex(p => p.id === productId)
 
@@ -47,44 +37,39 @@ router.get('/:id', (req, res) => {
 
 
 
-router.post('/', (req, res) => {
-    const products = JSON.parse(productsJSON)
-    const product = req.body
+router.post('/', async (req, res) => {
+   try {const product = req.body
 
+    const codigo = product.code
     const campos = Object.values(product)
 
-    if(campos.some(v => v === undefined)) {
-        res.json({status: {error}, error: 'Faltan campos del producto'})
-        return
-    }
-    if(product.find(p => p.code === product.code)){
-        res.json({status: 'error', error: 'Error, codigo repetido'})
-        return
-    }
+    product.id = await manager.addProduct(campos, codigo)
 
-    product.id = generateId()
+     
 
     products.push(product)
-    const productsToJSON = JSON.stringify(products)
+    const productsToJSON = JSON.stringify(products, null, '\t')
 
-    fs.writeFileSync('./products.json', productsToJSON)
+    await fs.promises.writeFile('./products.json', productsToJSON)
     res.json({status: 'success', product})
-
+    }
+    catch(err) {
+        res.status(400).json({error: err.message})
+    }
 })
 
 
 
 
-
-router.put('/:id', (req, res) => {
-    const products = JSON.parse(productsJSON)
+router.put('/:id', async (req, res) => {
     const uploadedProduct = req.body
-    const productId = req.params.id
+    const productId = parseInt(req.params.id)
     delete uploadedProduct.id
 
     const productIndex = products.findIndex(p => p.id === productId)
-
+    
     if(productIndex < 0) {
+        console.log(productIndex)
         res.json({status: 'error', error: 'Producto no encontrado'})
         return
     }
@@ -92,7 +77,7 @@ router.put('/:id', (req, res) => {
     products[productIndex] = {...products[productIndex], ...uploadedProduct}
 
     const productsToJSON = JSON.stringify(products)
-    fs.writeFileSync('./products.json', productsToJSON)
+    await fs.promises.writeFile('./products.json', productsToJSON)
 
     res.json({status: 'success', product: products[productIndex]})
 
@@ -102,9 +87,8 @@ router.put('/:id', (req, res) => {
 
 
 
-router.delete('/:id', (req, res) => {
-    const products = JSON.parse(productsJSON)
-    const productId = req.params.id
+router.delete('/:id', async (req, res) => {
+    const productId = parseInt(req.params.id)
 
     const productIndex = products.findIndex(p => p.id === productId)
 
@@ -113,12 +97,11 @@ router.delete('/:id', (req, res) => {
         return
     }
 
-    products.splice(productIndex, 1)
 
-    const productsToJSON = JSON.stringify(products)
-    fs.writeFileSync('./products.json', productsToJSON)
+    await manager.deteleProduct(productIndex)
 
     res.json({status: 'success', mensaje: 'Producto eliminado'})
 })
 
 
+module.exports = router

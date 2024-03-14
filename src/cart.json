@@ -1,3 +1,11 @@
 [
-    
+    {
+        "cartID": 1,
+        "products": [
+            {
+                "productID": 2,
+                "quantity": 1
+            }
+        ]
+    }
 ]

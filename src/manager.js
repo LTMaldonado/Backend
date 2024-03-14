@@ -1,25 +1,30 @@
-/**const fs = require('fs')
+const fs = require('fs')
 
 
 
 class ProductManager {
 
     #products
-    #path
-
-    static #ultimoProducto = 0
+    #carts
 
     constructor () {
         this.#products = this.getProducts()
-        this.#path = './products.json'
+        this.#carts = this.getCarts()
     }
 
-    #getNuevoId() {
-        const id = ProductManager.#ultimoProducto
-        ProductManager.#ultimoProducto++
+    async generateId  ()  {
+        //generar un id
+        let id = Math.floor(Math.random() * 100)
+
+        //traer el array de productos
+        const fileProducts = await this.#products
+
+        //Verificar que no se repita el Id
+        while (fileProducts.some( p => p.id === id)) {
+            id = Math.floor(Math.random() * 100)
+        }
         return id
     }
-
     async getProducts () {
 
         try { 
@@ -33,24 +38,28 @@ class ProductManager {
             console.log(`Error: ${err}`)
         }
     }
+    async getCarts () {
 
-    async addProduct (title, description, price, thumbnail, code, stock) {
+        try { 
+            const fileCarts = await fs.promises.readFile('./cart.json')
+    
+            const fileCartsParse = JSON.parse(fileCarts)
+    
+            return fileCartsParse
+        }
+        catch (err) {
+            console.log(`Error: ${err}`)
+        }
+    }
+
+
+    async addProduct (campos, codigo) {
+        let nuevoID
         const fileProductsParse = await this.#products
 
-        const product = {
-            id: this.#getNuevoId(),
-            title: title,
-            description: description,
-            price: price,
-            thumbnail: thumbnail,
-            code: code,
-            stock: stock
-        }
-        const campos = Object.values (product) 
 
-        if(fileProductsParse.find(pr => pr.code === code)) {
-            console.log('Error, el codigo ya existe')
-            return
+        if(fileProductsParse.find(pr => pr.code === codigo)) {
+            throw new Error ('Codigo repetido')
         }
         
         if(campos.some(v => v === undefined)) {
@@ -58,21 +67,8 @@ class ProductManager {
                 return
             }
 
-        fileProductsParse.push (product)
-
-        const fileProducts = JSON.stringify(fileProductsParse, null, '\t')
-
-        await fs.promises.writeFile('./products.json', fileProducts)
-    }
-
-    async getProductById (searchId) {
-        const fileProductsParse = await this.#products
-        if(fileProductsParse.find(pr => pr.id === searchId)) {
-            console.log(fileProductsParse[searchId])
-        }
-        else {
-            console.log('Error, ID no encontrada')
-        }
+        nuevoID = this.generateId()
+        return nuevoID
     }
 
     async updateProduct (update) {
@@ -95,21 +91,23 @@ class ProductManager {
         await fs.promises.writeFile('./products.json', fileProducts)
     }
 
-}
 
-const main = async () => {
-    const p1 = new ProductManager
-}
+    async addProductToCart (cartIndex, productIndex) {
+        const fileProductsParse = await this.#products
+        const fileCartsParse = await this.#carts
 
-const carts = [{id:1}, {id:2}, {id:3}, {id:4}, {id:5}, {id:6}, {id:7}]
-const generateId = () => {
-    let id = Math.floor(Math.random() * 10)
-    while (carts.some(p => p.id === id)) {
-        console.log(id)
-        id = Math.floor(Math.random() * 10)
+        if(cartIndex < 0 || productIndex < 0) {
+            throw new Error ('Operacion invalida')
+        }
+
+        const thisCart = fileCartsParse[cartIndex]
+
+        //en proceso
+
     }
-    console.log(id)
-    return id
 }
 
-generateId()*/
+const manager = new ProductManager
+
+
+module.exports = manager

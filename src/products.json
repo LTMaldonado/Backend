@@ -1,2 +1,29 @@
 [
+	{
+		"name": "Cocoa",
+		"description": "en polvo",
+		"price": 50,
+		"url": "img",
+		"code": 10,
+		"stock": 15,
+		"id": 2
+	},
+	{
+		"name": "Cocoa",
+		"description": "en polvo",
+		"price": 50,
+		"url": "img",
+		"code": 20,
+		"stock": 15,
+		"id": 82
+	},
+	{
+		"name": "Cocoa",
+		"description": "en polvo",
+		"price": 50,
+		"url": "img",
+		"code": 30,
+		"stock": 15,
+		"id": 78
+	}
 ]
