@@ -104,7 +104,7 @@ class ProductManager {
         const thisProduct = fileProductsParse[productIndex]
         const indexPInC = thisArrayCart.findIndex(p => p.productID === thisProduct.id)
 
-        if( indexPInC > 0 ){
+        if( indexPInC >= 0 ){
             thisArrayCart[indexPInC].quantity++           
         }
         else {
