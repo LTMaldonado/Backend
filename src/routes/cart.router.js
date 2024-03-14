@@ -16,11 +16,15 @@ router.post('/', (req, res) => {
         id: manager.generateId(),
         products: []
     }
-    res.json(cart)
+    carts.push(cart)
+    const fileCart = carts
+    const fileCartJSON = JSON.stringify(fileCart)
+
+    res.json(fileCartJSON)
 })
 
 router.get ('/:cid', (req, res) => {
-    const cartId = req.params.cid
+    const cartId = parseInt(req.params.cid)
     const cartIndex = carts.findIndex(c => c.id === cartId)
 
     if(cartIndex < 0 ) {
@@ -32,7 +36,7 @@ router.get ('/:cid', (req, res) => {
     res.json(listProducts)
 })
 
-router.post('/cid/products/id', async (req, res) => {
+router.post('/:cid/products/:id', async (req, res) => {
     const cartId = parseInt(req.params.cid)
     const productId = parseInt(req.params.id)
 
