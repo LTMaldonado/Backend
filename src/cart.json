@@ -1,9 +1,13 @@
 [
     {
-        "cartID": 1,
+        "id": 1,
         "products": [
             {
                 "productID": 2,
+                "quantity": 1
+            },
+            {
+                "productID": 3,
                 "quantity": 1
             }
         ]

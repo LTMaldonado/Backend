@@ -32,7 +32,7 @@ router.get ('/:cid', (req, res) => {
     res.json(listProducts)
 })
 
-router.post('/cid/products/id', (req, res) => {
+router.post('/cid/products/id', async (req, res) => {
     const cartId = parseInt(req.params.cid)
     const productId = parseInt(req.params.id)
 
@@ -40,9 +40,9 @@ router.post('/cid/products/id', (req, res) => {
     const productIndex = products.findIndex(p => p.id === productId)
 
 
-    //en proceso
+    await manager.addProductToCart(cartIndex, productIndex)
     
-    
+    res.json(carts[cartIndex])
     
 })
 

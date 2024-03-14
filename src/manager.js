@@ -100,9 +100,21 @@ class ProductManager {
             throw new Error ('Operacion invalida')
         }
 
-        const thisCart = fileCartsParse[cartIndex]
+        const thisArrayCart = fileCartsParse[cartIndex].products
+        const thisProduct = fileProductsParse[productIndex]
+        const indexPInC = thisArrayCart.findIndex(p => p.productID === thisProduct.id)
 
-        //en proceso
+        if( indexPInC > 0 ){
+            thisArrayCart[indexPInC].quantity++           
+        }
+        else {
+            thisArrayCart.push({
+                productID: thisProduct.id,
+                quantity: 1
+            })
+        }
+        const fileCarts = JSON.stringify(fileCartsParse, null, '\t')
+        await fs.promises.writeFile('./cart.json', fileCarts)
 
     }
 }
